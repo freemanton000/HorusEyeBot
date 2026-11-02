@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EYE OF HORUS</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    background: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-x: hidden;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 600px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  h1 {
+    color: #00ff88;
+    text-shadow: 0 0 10px #00ff88, 0 0 20px rgba(0, 255, 136, 0.5);
+    letter-spacing: 5px;
+    font-size: 2.2em;
+    margin: 10px 0;
+  }
+
+  .subtitle {
+    color: #ff0040;
+    text-shadow: 0 0 8px #ff0040;
+    letter-spacing: 2px;
+    font-size: 0.85em;
+    margin: 0 0 25px;
+  }
+
+  .input-section {
+    background: #1a1a1a;
+    border: 1px solid #00ff88;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+    margin-bottom: 20px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    background: #0d0d0d;
+    border: 1px solid #333;
+    border-radius: 5px;
+    color: #00ff88;
+    font-size: 1em;
+    font-family: inherit;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 255, 136, 0.2);
+  }
+
+  input:focus { border-color: #00ff88; }
+
+  button {
+    background: transparent;
+    border: 2px solid #00ff88;
+    color: #00ff88;
+    padding: 14px 22px;
+    font-family: inherit;
+    font-size: 1em;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s;
+  }
+
+  button:hover {
+    background: #00ff88;
+    color: #0d0d0d;
+    box-shadow: 0 0 20px #00ff88;
+  }
+
+  button:disabled {
+    border-color: #555;
+    color: #555;
+    cursor: default;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .hidden { display: none; }
+
+  .scanning {
+    color: #ff0040;
+    font-size: 1.1em;
+    margin: 20px 0;
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+  }
+
+  .results {
+    background: #1a1a1a;
+    border: 1px solid #ff0040;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(255, 0, 64, 0.2);
+  }
+
+  .bar-row {
+    margin-bottom: 22px;
+    text-align: left;
+    position: relative;
+  }
+
+  .bar-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 0.85em;
+    letter-spacing: 1px;
+    color: #bbb;
+  }
+
+  .bar-label-text { flex: 1; }
+
+  .info-btn {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    padding: 0;
+    margin-left: 8px;
+    border: 1px solid #00ff88;
+    border-radius: 50%;
+    color: #00ff88;
+    font-size: 0.85em;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: 20px;
+    text-align: center;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .info-btn:hover,
+  .info-btn.active {
+    background: #00ff88;
+    color: #0d0d0d;
+    box-shadow: 0 0 10px #00ff88;
+  }
+
+  .info-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.35s ease, margin 0.35s ease;
+    opacity: 0;
+    font-size: 0.8em;
+    line-height: 1.5;
+    color: #9ad9b8;
+    background: #111;
+    border-left: 2px solid #00ff88;
+    padding: 0 12px;
+    margin: 0 0 0 0;
+    border-radius: 0 5px 5px 0;
+  }
+
+  .info-panel.open {
+    max-height: 260px;
+    opacity: 1;
+    padding: 10px 12px;
+    margin: 0 0 10px 0;
+  }
+
+  .info-panel strong { color: #00ff88; }
+  .info-panel em { color: #ff0040; font-style: normal; }
+
+  .bar-track {
+    background: #111;
+    border-radius: 3px;
+    height: 14px;
+    overflow: hidden;
+    border: 1px solid #222;
+  }
+
+  .bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00ff88, #ff0040);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+  }
+
+  .bar-value {
+    display: inline-block;
+    margin-top: 4px;
+    color: #00ff88;
+    font-weight: bold;
+    font-size: 0.9em;
+  }
+
+  .rating {
+    margin-top: 25px;
+    border-top: 1px solid #333;
+    padding-top: 20px;
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .rating span:first-child { color: #ff0040; }
+
+  #ratingValue {
+    color: #00ff88;
+    text-shadow: 0 0 10px #00ff88;
+    font-size: 2em;
+    display: block;
+    margin-top: 10px;
+  }
+
+  .verdict {
+    margin-top: 12px;
+    font-size: 0.85em;
+    color: #888;
+    letter-spacing: 1px;
+    min-height: 1.2em;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>EYE OF HORUS</h1>
+  <p class="subtitle">ДЕЦЕНТРАЛИЗОВАННЫЙ КАРМИЧЕСКИЙ АУДИТ</p>
+
+  <div class="input-section">
+    <input type="text" id="subject" placeholder="Имя субъекта или цитата...">
+    <button id="auditBtn">ЗАПУСТИТЬ ФРАКТАЛЬНЫЙ АУДИТ</button>
+  </div>
+
+  <div id="scanning" class="scanning hidden">Сканирование инфополя...</div>
+
+  <div id="results" class="results hidden">
+
+    <!-- ИЭС -->
+    <div class="bar-row">
+      <div class="bar-label">
+        <span class="bar-label-text">ИЭС — Индекс Энтропии Слова</span>
+        <button class="info-btn" data-target="info-iek" aria-label="Пояснение ИЭС">i</button>
+      </div>
+      <div class="info-panel" id="info-iek">
+        <strong>Что это:</strong> насколько плотно слова субъекта превращаются в белый шум —
+        вода, общие фразы, канцелярит, повторы, отсутствие проверяемых фактов.<br><br>
+        <strong>Как читать:</strong><br>
+        <em>0–30%</em> — речь плотная, конкретная, есть цифры и факты.<br>
+        <em>31–70%</em> — середина: смысл есть, но разбавлен.<br>
+        <em>71–100%</em> — словесный туман: много слов, мало смысла.
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="iekFill"></div></div>
+      <span class="bar-value" id="iekValue">0%</span>
+    </div>
+
+    <!-- ФСВ -->
+    <div class="bar-row">
+      <div class="bar-label">
+        <span class="bar-label-text">ФСВ — Физический След Вранья</span>
+        <button class="info-btn" data-target="info-fsv" aria-label="Пояснение ФСВ">i</button>
+      </div>
+      <div class="info-panel" id="info-fsv">
+        <strong>Что это:</strong> разрыв между обещанием и физической реальностью —
+        невыполненные сроки, проваленные проекты, «собака съела отчёт»,
+        расхождение слов с документом или поступком.<br><br>
+        <strong>Как читать:</strong><br>
+        <em>0–30%</em> — следов вранья почти нет, слова стыкуются с делами.<br>
+        <em>31–70%</em> — есть «мутные пятна», но не доказано.<br>
+        <em>71–100%</em> — физический след ярко выражен: дела расходятся со словами.
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="fsvFill"></div></div>
+      <span class="bar-value" id="fsvValue">0%</span>
+    </div>
+
+    <!-- ВП -->
+    <div class="bar-row">
+      <div class="bar-label">
+        <span class="bar-label-text">ВП — Вектор Паразитизма</span>
+        <button class="info-btn" data-target="info-vp" aria-label="Пояснение ВП">i</button>
+      </div>
+      <div class="info-panel" id="info-vp">
+        <strong>Что это:</strong> сколько ресурса субъект забирает из системы, не возвращая
+        эквивалент — дотации, привилегии, доступ к общему благу в обмен на пустоту.<br><br>
+        <strong>Как читать:</strong><br>
+        <em>0–30%</em> — субъект скорее донор, чем паразит.<br>
+        <em>31–70%</em> — нейтральный обмен, бывают перекосы.<br>
+        <em>71–100%</em> — паразитический вектор выражен: берёт больше, чем даёт.
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="vpFill"></div></div>
+      <span class="bar-value" id="vpValue">0%</span>
+    </div>
+
+    <div class="rating">
+      <span>Кармический Рейтинг Субъекта</span>
+      <span id="ratingValue">0%</span>
+      <div class="verdict" id="verdict"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const subjectInput = document.getElementById('subject');
+  const auditBtn = document.getElementById('auditBtn');
+  const scanningDiv = document.getElementById('scanning');
+  const resultsDiv = document.getElementById('results');
+  const ratingValue = document.getElementById('ratingValue');
+  const verdictEl = document.getElementById('verdict');
+
+  const iekFill = document.getElementById('iekFill');
+  const iekValue = document.getElementById('iekValue');
+  const fsvFill = document.getElementById('fsvFill');
+  const fsvValue = document.getElementById('fsvValue');
+  const vpFill = document.getElementById('vpFill');
+  const vpValue = document.getElementById('vpValue');
+
+  /* --- Кнопки "i" и панели пояснений --- */
+  document.querySelectorAll('.info-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      const target = document.getElementById(btn.dataset.target);
+      const isOpen = target.classList.contains('open');
+
+      // закрываем все остальные панели
+      document.querySelectorAll('.info-panel.open').forEach(function (p) {
+        if (p !== target) p.classList.remove('open');
+      });
+      document.querySelectorAll('.info-btn.active').forEach(function (b) {
+        if (b !== btn) b.classList.remove('active');
+      });
+
+      target.classList.toggle('open', !isOpen);
+      btn.classList.toggle('active', !isOpen);
+    });
+  });
+
+  /* --- Хеш --- */
+  function hashString(str) {
+    let hash = 5381;
+    for (let i = 0; i < str.length; i++) {
+      hash = ((hash << 5) + hash + str.charCodeAt(i)) >>> 0;
+    }
+    return hash;
+  }
+
+  function getIndices(subject) {
+    const h = hashString(subject);
+    const iek = h % 101;
+    const fsv = (h >>> 4) % 101;
+    const vp = (h >>> 8) % 101;
+    return { iek, fsv, vp };
+  }
+
+  /* --- Анимации --- */
+  function animateBar(fill, valueText, target, duration) {
+    const startTime = performance.now();
+    function frame() {
+      const elapsed = performance.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(eased * target);
+      fill.style.width = current + '%';
+      valueText.textContent = current + '%';
+      if (progress < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function animateText(el, target, duration) {
+    const startTime = performance.now();
+    function frame() {
+      const elapsed = performance.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target) + '%';
+      if (progress < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* --- Вердикт по рейтингу --- */
+  function getVerdict(rating) {
+    if (rating <= 20) return 'СУБЪЕКТ ПРОЗРАЧЕН. ГЛАЗ НЕ ВИДИТ ТЕНИ.';
+    if (rating <= 40) return 'ЛЁГКАЯ ДЫМКА. ДОПУСТИМЫЙ УРОВЕНЬ ШУМА.';
+    if (rating <= 60) return 'СЕРЫЙ СЕКТОР. СЛОВА И ДЕЛА РАСХОДЯТСЯ НАПОЛОВИНУ.';
+    if (rating <= 80) return 'ПЛОТНЫЙ ТУМАН. ГЛАЗ ФИКСИРУЕТ ПАРАЗИТИЧЕСКИЙ ВЕКТОР.';
+    return 'ПОЛНОЕ ЗАТМЕНИЕ. СУБЪЕКТ — ЧЁРНАЯ ДЫРА ИНФОПОЛЯ.';
+  }
+
+  auditBtn.addEventListener('click', function () {
+    const subject = subjectInput.value.trim();
+    if (!subject) {
+      subjectInput.style.borderColor = '#ff0040';
+      subjectInput.placeholder = 'Введите имя или цитату!';
+      return;
+    }
+
+    subjectInput.style.borderColor = '#333';
+    auditBtn.disabled = true;
+    scanningDiv.classList.remove('hidden');
+    resultsDiv.classList.add('hidden');
+    verdictEl.textContent = '';
+
+    const { iek, fsv, vp } = getIndices(subject);
+
+    setTimeout(function () {
+      scanningDiv.classList.add('hidden');
+      resultsDiv.classList.remove('hidden');
+
+      const duration = 1500;
+      animateBar(iekFill, iekValue, iek, duration);
+      animateBar(fsvFill, fsvValue, fsv, duration);
+      animateBar(vpFill, vpValue, vp, duration);
+
+      const rating = Math.round((iek + fsv + vp) / 3);
+      animateText(ratingValue, rating, duration);
+
+      setTimeout(function () {
+        verdictEl.textContent = getVerdict(rating);
+        auditBtn.disabled = false;
+      }, duration + 100);
+    }, 1000);
+  });
+</script>
+
+</body>
+</html>
