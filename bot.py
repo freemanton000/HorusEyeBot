@@ -4,7 +4,7 @@ from telebot import types
 import os
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-WEBAPP_URL = "https://freemanton000.github.io/Horus/index.html"
+WEBAPP_URL = "https://freemanton000.github.io/HorusEyeBot/"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
