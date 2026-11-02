@@ -1,8 +1,10 @@
 import telebot
 from telebot import types
 
-BOT_TOKEN = "8906985653:AAFC5_j2RTP3n4OLIxJ-G1WZFMVgMAaAgts"
-WEBAPP_URL = "https://your-domain.com/index.html"
+import os
+
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+WEBAPP_URL = "https://freemanton000.github.io/Horus/index.html"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
