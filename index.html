@@ -17,6 +17,7 @@
     justify-content: center;
     align-items: flex-start;
     overflow-x: hidden;
+    transition: font-family 0.3s;
   }
 
   .container {
@@ -24,6 +25,31 @@
     max-width: 600px;
     padding: 20px;
     text-align: center;
+    position: relative;
+  }
+
+  /* Кнопка переключения языка */
+  .lang-switch {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    background: transparent;
+    border: 1px solid #00ff88;
+    color: #00ff88;
+    padding: 5px 10px;
+    font-size: 0.8em;
+    font-family: inherit;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+    z-index: 10;
+  }
+
+  .lang-switch:hover {
+    background: #00ff88;
+    color: #0d0d0d;
+    box-shadow: 0 0 10px #00ff88;
   }
 
   h1 {
@@ -31,7 +57,7 @@
     text-shadow: 0 0 10px #00ff88, 0 0 20px rgba(0, 255, 136, 0.5);
     letter-spacing: 5px;
     font-size: 2.2em;
-    margin: 10px 0;
+    margin: 30px 0 10px;
   }
 
   .subtitle {
@@ -67,7 +93,7 @@
 
   input:focus { border-color: #00ff88; }
 
-  button {
+  button.action-btn {
     background: transparent;
     border: 2px solid #00ff88;
     color: #00ff88;
@@ -80,13 +106,13 @@
     transition: all 0.3s;
   }
 
-  button:hover {
+  button.action-btn:hover {
     background: #00ff88;
     color: #0d0d0d;
     box-shadow: 0 0 20px #00ff88;
   }
 
-  button:disabled {
+  button.action-btn:disabled {
     border-color: #555;
     color: #555;
     cursor: default;
@@ -176,7 +202,7 @@
   }
 
   .info-panel.open {
-    max-height: 260px;
+    max-height: 300px;
     opacity: 1;
     padding: 10px 12px;
     margin: 0 0 10px 0;
@@ -239,12 +265,14 @@
 <body>
 
 <div class="container">
+  <button class="lang-switch" id="langSwitch">EN</button>
+  
   <h1>EYE OF HORUS</h1>
-  <p class="subtitle">ДЕЦЕНТРАЛИЗОВАННЫЙ КАРМИЧЕСКИЙ АУДИТ</p>
+  <p class="subtitle" id="subtitle">ДЕЦЕНТРАЛИЗОВАННЫЙ КАРМИЧЕСКИЙ АУДИТ</p>
 
   <div class="input-section">
     <input type="text" id="subject" placeholder="Имя субъекта или цитата...">
-    <button id="auditBtn">ЗАПУСТИТЬ ФРАКТАЛЬНЫЙ АУДИТ</button>
+    <button class="action-btn" id="auditBtn">ЗАПУСТИТЬ ФРАКТАЛЬНЫЙ АУДИТ</button>
   </div>
 
   <div id="scanning" class="scanning hidden">Сканирование инфополя...</div>
@@ -254,17 +282,10 @@
     <!-- ИЭС -->
     <div class="bar-row">
       <div class="bar-label">
-        <span class="bar-label-text">ИЭС — Индекс Энтропии Слова</span>
-        <button class="info-btn" data-target="info-iek" aria-label="Пояснение ИЭС">i</button>
+        <span class="bar-label-text" id="label-iek">ИЭС — Индекс Энтропии Слова</span>
+        <button class="info-btn" data-target="info-iek" aria-label="Info">i</button>
       </div>
-      <div class="info-panel" id="info-iek">
-        <strong>Что это:</strong> насколько плотно слова субъекта превращаются в белый шум —
-        вода, общие фразы, канцелярит, повторы, отсутствие проверяемых фактов.<br><br>
-        <strong>Как читать:</strong><br>
-        <em>0–30%</em> — речь плотная, конкретная, есть цифры и факты.<br>
-        <em>31–70%</em> — середина: смысл есть, но разбавлен.<br>
-        <em>71–100%</em> — словесный туман: много слов, мало смысла.
-      </div>
+      <div class="info-panel" id="info-iek"></div>
       <div class="bar-track"><div class="bar-fill" id="iekFill"></div></div>
       <span class="bar-value" id="iekValue">0%</span>
     </div>
@@ -272,18 +293,10 @@
     <!-- ФСВ -->
     <div class="bar-row">
       <div class="bar-label">
-        <span class="bar-label-text">ФСВ — Физический След Вранья</span>
-        <button class="info-btn" data-target="info-fsv" aria-label="Пояснение ФСВ">i</button>
+        <span class="bar-label-text" id="label-fsv">ФСВ — Физический След Вранья</span>
+        <button class="info-btn" data-target="info-fsv" aria-label="Info">i</button>
       </div>
-      <div class="info-panel" id="info-fsv">
-        <strong>Что это:</strong> разрыв между обещанием и физической реальностью —
-        невыполненные сроки, проваленные проекты, «собака съела отчёт»,
-        расхождение слов с документом или поступком.<br><br>
-        <strong>Как читать:</strong><br>
-        <em>0–30%</em> — следов вранья почти нет, слова стыкуются с делами.<br>
-        <em>31–70%</em> — есть «мутные пятна», но не доказано.<br>
-        <em>71–100%</em> — физический след ярко выражен: дела расходятся со словами.
-      </div>
+      <div class="info-panel" id="info-fsv"></div>
       <div class="bar-track"><div class="bar-fill" id="fsvFill"></div></div>
       <span class="bar-value" id="fsvValue">0%</span>
     </div>
@@ -291,23 +304,16 @@
     <!-- ВП -->
     <div class="bar-row">
       <div class="bar-label">
-        <span class="bar-label-text">ВП — Вектор Паразитизма</span>
-        <button class="info-btn" data-target="info-vp" aria-label="Пояснение ВП">i</button>
+        <span class="bar-label-text" id="label-vp">ВП — Вектор Паразитизма</span>
+        <button class="info-btn" data-target="info-vp" aria-label="Info">i</button>
       </div>
-      <div class="info-panel" id="info-vp">
-        <strong>Что это:</strong> сколько ресурса субъект забирает из системы, не возвращая
-        эквивалент — дотации, привилегии, доступ к общему благу в обмен на пустоту.<br><br>
-        <strong>Как читать:</strong><br>
-        <em>0–30%</em> — субъект скорее донор, чем паразит.<br>
-        <em>31–70%</em> — нейтральный обмен, бывают перекосы.<br>
-        <em>71–100%</em> — паразитический вектор выражен: берёт больше, чем даёт.
-      </div>
+      <div class="info-panel" id="info-vp"></div>
       <div class="bar-track"><div class="bar-fill" id="vpFill"></div></div>
       <span class="bar-value" id="vpValue">0%</span>
     </div>
 
     <div class="rating">
-      <span>Кармический Рейтинг Субъекта</span>
+      <span id="rating-label">Кармический Рейтинг Субъекта</span>
       <span id="ratingValue">0%</span>
       <div class="verdict" id="verdict"></div>
     </div>
@@ -315,28 +321,111 @@
 </div>
 
 <script>
+  /* --- СЛОВАРИ --- */
+  const translations = {
+    ru: {
+      subtitle: "ДЕЦЕНТРАЛИЗОВАННЫЙ КАРМИЧЕСКИЙ АУДИТ",
+      placeholder: "Имя субъекта или цитата...",
+      btnAudit: "ЗАПУСТИТЬ ФРАКТАЛЬНЫЙ АУДИТ",
+      scanning: "Сканирование инфополя...",
+      labelIek: "ИЭС — Индекс Энтропии Слова",
+      labelFsv: "ФСВ — Физический След Вранья",
+      labelVp: "ВП — Вектор Паразитизма",
+      ratingLabel: "Кармический Рейтинг Субъекта",
+      infoIek: "<strong>Что это:</strong> насколько плотно слова субъекта превращаются в белый шум — вода, общие фразы, канцелярит, повторы, отсутствие проверяемых фактов.<br><br><strong>Как читать:</strong><br><em>0–30%</em> — речь плотная, конкретная, есть цифры и факты.<br><em>31–70%</em> — середина: смысл есть, но разбавлен.<br><em>71–100%</em> — словесный туман: много слов, мало смысла.",
+      infoFsv: "<strong>Что это:</strong> разрыв между обещанием и физической реальностью — невыполненные сроки, проваленные проекты, «собака съела отчёт», расхождение слов с документом или поступком.<br><br><strong>Как читать:</strong><br><em>0–30%</em> — следов вранья почти нет, слова стыкуются с делами.<br><em>31–70%</em> — есть «мутные пятна», но не доказано.<br><em>71–100%</em> — физический след ярко выражен: дела расходятся со словами.",
+      infoVp: "<strong>Что это:</strong> сколько ресурса субъект забирает из системы, не возвращая эквивалент — дотации, привилегии, доступ к общему благу в обмен на пустоту.<br><br><strong>Как читать:</strong><br><em>0–30%</em> — субъект скорее донор, чем паразит.<br><em>31–70%</em> — нейтральный обмен, бывают перекосы.<br><em>71–100%</em> — паразитический вектор выражен: берёт больше, чем даёт.",
+      verdicts: [
+        "СУБЪЕКТ ПРОЗРАЧЕН. ГЛАЗ НЕ ВИДИТ ТЕНИ.",
+        "ЛЁГКАЯ ДЫМКА. ДОПУСТИМЫЙ УРОВЕНЬ ШУМА.",
+        "СЕРЫЙ СЕКТОР. СЛОВА И ДЕЛА РАСХОДЯТСЯ НАПОЛОВИНУ.",
+        "ПЛОТНЫЙ ТУМАН. ГЛАЗ ФИКСИРУЕТ ПАРАЗИТИЧЕСКИЙ ВЕКТОР.",
+        "ПОЛНОЕ ЗАТМЕНИЕ. СУБЪЕКТ — ЧЁРНАЯ ДЫРА ИНФОПОЛЯ."
+      ],
+      errEmpty: "Введите имя или цитату!"
+    },
+    en: {
+      subtitle: "DECENTRALIZED KARMIC AUDIT",
+      placeholder: "Subject name or quote...",
+      btnAudit: "LAUNCH FRACTAL AUDIT",
+      scanning: "Scanning info-field...",
+      labelIek: "SEI — Speech Entropy Index",
+      labelFsv: "PTL — Physical Trace of Lies",
+      labelVp: "PV — Parasitism Vector",
+      ratingLabel: "Karmic Rating of Subject",
+      infoIek: "<strong>What is it:</strong> how densely the subject's words turn into white noise — water, clichés, bureaucratic jargon, repetitions, lack of verifiable facts.<br><br><strong>How to read:</strong><br><em>0–30%</em> — speech is dense, specific, with numbers and facts.<br><em>31–70%</em> — middle ground: meaning exists but diluted.<br><em>71–100%</em> — verbal fog: many words, little meaning.",
+      infoFsv: "<strong>What is it:</strong> the gap between promise and physical reality — missed deadlines, failed projects, discrepancies between words and documents or actions.<br><br><strong>How to read:</strong><br><em>0–30%</em> — almost no traces of lies, words match deeds.<br><em>31–70%</em> — there are 'murky spots' but unproven.<br><em>71–100%</em> — the physical trace is clearly expressed: deeds diverge from words.",
+      infoVp: "<strong>What is it:</strong> how much resource the subject takes from the system without returning an equivalent — subsidies, privileges, access to common good in exchange for emptiness.<br><br><strong>How to read:</strong><br><em>0–30%</em> — the subject is more of a donor than a parasite.<br><em>31–70%</em> — neutral exchange, occasional imbalances.<br><em>71–100%</em> — parasitic vector is expressed: takes more than gives.",
+      verdicts: [
+        "SUBJECT IS TRANSPARENT. EYE SEES NO SHADOW.",
+        "LIGHT HAZE. ACCEPTABLE NOISE LEVEL.",
+        "GREY SECTOR. WORDS AND DEEDS HALF-MATCH.",
+        "DENSE FOG. EYE FIXES THE PARASITIC VECTOR.",
+        "TOTAL ECLIPSE. SUBJECT IS A BLACK HOLE OF INFO-FIELD."
+      ],
+      errEmpty: "Enter a name or quote!"
+    }
+  };
+
+  let currentLang = localStorage.getItem('horus_lang') || 'ru';
+
+  /* --- DOM ЭЛЕМЕНТЫ --- */
+  const langSwitch = document.getElementById('langSwitch');
+  const subtitle = document.getElementById('subtitle');
   const subjectInput = document.getElementById('subject');
   const auditBtn = document.getElementById('auditBtn');
   const scanningDiv = document.getElementById('scanning');
   const resultsDiv = document.getElementById('results');
-  const ratingValue = document.getElementById('ratingValue');
+  const ratingLabel = document.getElementById('rating-label');
   const verdictEl = document.getElementById('verdict');
+  
+  const labelIek = document.getElementById('label-iek');
+  const labelFsv = document.getElementById('label-fsv');
+  const labelVp = document.getElementById('label-vp');
+  const infoIek = document.getElementById('info-iek');
+  const infoFsv = document.getElementById('info-fsv');
+  const infoVp = document.getElementById('info-vp');
 
-  const iekFill = document.getElementById('iekFill');
-  const iekValue = document.getElementById('iekValue');
-  const fsvFill = document.getElementById('fsvFill');
-  const fsvValue = document.getElementById('fsvValue');
-  const vpFill = document.getElementById('vpFill');
-  const vpValue = document.getElementById('vpValue');
+  /* --- ФУНКЦИЯ ПЕРЕВОДА --- */
+  function applyLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('horus_lang', lang);
+    const t = translations[lang];
+    document.documentElement.lang = lang;
 
-  /* --- Кнопки "i" и панели пояснений --- */
+    langSwitch.textContent = lang === 'ru' ? 'EN' : 'RU';
+    subtitle.textContent = t.subtitle;
+    subjectInput.placeholder = t.placeholder;
+    auditBtn.textContent = t.btnAudit;
+    scanningDiv.textContent = t.scanning;
+    ratingLabel.textContent = t.ratingLabel;
+
+    labelIek.textContent = t.labelIek;
+    labelFsv.textContent = t.labelFsv;
+    labelVp.textContent = t.labelVp;
+
+    infoIek.innerHTML = t.infoIek;
+    infoFsv.innerHTML = t.infoFsv;
+    infoVp.innerHTML = t.infoVp;
+
+    // Пересчитываем вердикт, если результаты уже на экране
+    if (!resultsDiv.classList.contains('hidden')) {
+      const r = parseInt(document.getElementById('ratingValue').textContent) || 0;
+      verdictEl.textContent = getVerdict(r);
+    }
+  }
+
+  langSwitch.addEventListener('click', () => {
+    applyLanguage(currentLang === 'ru' ? 'en' : 'ru');
+  });
+
+  /* --- КНОПКИ "i" --- */
   document.querySelectorAll('.info-btn').forEach(function (btn) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       const target = document.getElementById(btn.dataset.target);
       const isOpen = target.classList.contains('open');
 
-      // закрываем все остальные панели
       document.querySelectorAll('.info-panel.open').forEach(function (p) {
         if (p !== target) p.classList.remove('open');
       });
@@ -349,7 +438,7 @@
     });
   });
 
-  /* --- Хеш --- */
+  /* --- ХЕШ --- */
   function hashString(str) {
     let hash = 5381;
     for (let i = 0; i < str.length; i++) {
@@ -360,13 +449,10 @@
 
   function getIndices(subject) {
     const h = hashString(subject);
-    const iek = h % 101;
-    const fsv = (h >>> 4) % 101;
-    const vp = (h >>> 8) % 101;
-    return { iek, fsv, vp };
+    return { iek: h % 101, fsv: (h >>> 4) % 101, vp: (h >>> 8) % 101 };
   }
 
-  /* --- Анимации --- */
+  /* --- АНИМАЦИИ --- */
   function animateBar(fill, valueText, target, duration) {
     const startTime = performance.now();
     function frame() {
@@ -393,20 +479,25 @@
     requestAnimationFrame(frame);
   }
 
-  /* --- Вердикт по рейтингу --- */
+  /* --- ВЕРДИКТ --- */
   function getVerdict(rating) {
-    if (rating <= 20) return 'СУБЪЕКТ ПРОЗРАЧЕН. ГЛАЗ НЕ ВИДИТ ТЕНИ.';
-    if (rating <= 40) return 'ЛЁГКАЯ ДЫМКА. ДОПУСТИМЫЙ УРОВЕНЬ ШУМА.';
-    if (rating <= 60) return 'СЕРЫЙ СЕКТОР. СЛОВА И ДЕЛА РАСХОДЯТСЯ НАПОЛОВИНУ.';
-    if (rating <= 80) return 'ПЛОТНЫЙ ТУМАН. ГЛАЗ ФИКСИРУЕТ ПАРАЗИТИЧЕСКИЙ ВЕКТОР.';
-    return 'ПОЛНОЕ ЗАТМЕНИЕ. СУБЪЕКТ — ЧЁРНАЯ ДЫРА ИНФОПОЛЯ.';
+    const v = translations[currentLang].verdicts;
+    if (rating <= 20) return v[0];
+    if (rating <= 40) return v[1];
+    if (rating <= 60) return v[2];
+    if (rating <= 80) return v[3];
+    return v[4];
   }
 
+  /* --- ЗАПУСК АУДИТА --- */
   auditBtn.addEventListener('click', function () {
     const subject = subjectInput.value.trim();
     if (!subject) {
       subjectInput.style.borderColor = '#ff0040';
-      subjectInput.placeholder = 'Введите имя или цитату!';
+      subjectInput.placeholder = translations[currentLang].errEmpty;
+      setTimeout(() => {
+        subjectInput.placeholder = translations[currentLang].placeholder;
+      }, 2000);
       return;
     }
 
@@ -423,12 +514,12 @@
       resultsDiv.classList.remove('hidden');
 
       const duration = 1500;
-      animateBar(iekFill, iekValue, iek, duration);
-      animateBar(fsvFill, fsvValue, fsv, duration);
-      animateBar(vpFill, vpValue, vp, duration);
+      animateBar(document.getElementById('iekFill'), document.getElementById('iekValue'), iek, duration);
+      animateBar(document.getElementById('fsvFill'), document.getElementById('fsvValue'), fsv, duration);
+      animateBar(document.getElementById('vpFill'), document.getElementById('vpValue'), vp, duration);
 
       const rating = Math.round((iek + fsv + vp) / 3);
-      animateText(ratingValue, rating, duration);
+      animateText(document.getElementById('ratingValue'), rating, duration);
 
       setTimeout(function () {
         verdictEl.textContent = getVerdict(rating);
@@ -436,6 +527,10 @@
       }, duration + 100);
     }, 1000);
   });
+
+  /* --- ИНИЦИАЛИЗАЦИЯ --- */
+  applyLanguage(currentLang);
+
 </script>
 
 </body>
