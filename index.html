@@ -369,7 +369,10 @@
   };
 
   let currentLang = localStorage.getItem('horus_lang') || 'ru';
-
+  if (window.Telegram && window.Telegram.WebApp) {
+  window.Telegram.WebApp.ready();
+  window.Telegram.WebApp.expand();
+}
   /* --- DOM ЭЛЕМЕНТЫ --- */
   const langSwitch = document.getElementById('langSwitch');
   const subtitle = document.getElementById('subtitle');
