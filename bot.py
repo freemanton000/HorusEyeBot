@@ -4,7 +4,7 @@ from telebot import types
 import os
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
-WEBAPP_URL = "https://fancy-vacherin-c6e7d0.netlify.app"
+WEBAPP_URL = "https://fancy-vacherin-c6e7d0.netlify.app/?v=2"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
